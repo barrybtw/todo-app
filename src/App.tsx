@@ -6,6 +6,7 @@ import "./App.css";
 function useTodoList() {
   const [todos, setTodos] = useState([
     {
+      id: Math.random() * 100,
       title: "Learn React",
       description: "",
       priority: 0,
@@ -20,10 +21,11 @@ function useTodoList() {
     priority: number,
     description: string,
     completed = false,
+    id = Math.random() * 100,
   ) => {
     setTodos((prev) => [
       ...prev,
-      { title, description, completed, dueDate, priority },
+      { title, description, completed, dueDate, priority, id },
     ]);
   };
 
@@ -34,7 +36,9 @@ function useTodoList() {
   };
 
   const removeTodo = (index: number) => {
-    setTodos((prev) => prev.filter((_, i) => i !== index));
+    console.log(index);
+
+    setTodos((prev) => prev.filter((_) => index !== _.id));
   };
 
   return { todos, addTodo, toggleTodo, removeTodo };
@@ -52,7 +56,8 @@ function Todo({ todo, index, toggleTodo, removeTodo }: any) {
       <p>{todo.description}</p>
       <p>Priority: {todo.priority}</p>
       <p>Due {(todo.dueDate as Date).toUTCString()}</p>
-      <button onClick={removeTodo}>Remove</button>
+      <p>{todo.id}</p>
+      <button onClick={() => removeTodo(todo.id)}>Remove</button>
     </li>
   );
 }
@@ -119,14 +124,14 @@ function App() {
         </button>
       </form>
       {/* @ts-ignore */}
-      <ul ref={parent}>
+      <ul ref={parent} className="flex flex-row gap-12 flex-wrap px-12 py-4">
         {todos.map((todo, index) => (
           <Todo
             key={index}
             todo={todo}
-            index={index}
+            index={todo.id}
             toggleTodo={toggleTodo}
-            removeTodo={() => removeTodo(index)}
+            removeTodo={() => removeTodo(todo.id)}
           />
         ))}
       </ul>
